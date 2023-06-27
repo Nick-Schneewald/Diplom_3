@@ -120,15 +120,10 @@ public class RegistrationSeleniumChromeTest {
     public void tearDown(){
         UserClient userClient = new UserClient();
         LoginUserRequest loginUserRequest = LoginUserRequest.from(createUserRequest);
-        /*Если убрать здесь проверку, то метод с аннотацией @After сломается после теста userShouldNotBeRegisteredWithLessThen6CharPass()
-        Когда проверяется попытка регистрации с слишком коротким паролем и userClient.login() не вернет токен accessToken,
-        соотвественно и bearerToken*/
         if(userClient.login(loginUserRequest).extract().jsonPath().get("success").equals("true")){
             String accessToken = userClient.login(loginUserRequest).extract().jsonPath().get("accessToken");
             String bearerToken = accessToken.substring(BEARER_TOKEN_START_POS);
-            if (bearerToken != null) {
                 userClient.delete(bearerToken);
-            }
         }
         driver.close();
         driver.quit();
